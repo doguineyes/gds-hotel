@@ -13,27 +13,27 @@ pnpm build
 
 ### Use from TypeScript
 ```ts
-import { SoapClient, SoapAdapter } from "@your-scope/hotel-distribution-core";
+import { SoapClient, SoapAdapter } from "@doguin/gds-hotel";
 
 
 const client = new SoapClient({
-endpoint: process.env.GDS_ENDPOINT!,
-namespace: "gds", // vendor-specific prefix (does not leak secrets)
-username: process.env.GDS_USER, // optional
-password: process.env.GDS_PASS, // optional
-resolveSoapAction: (op) => `urn:gds:${op}` // optional header if your provider requires SOAPAction
+    endpoint: process.env.GDS_ENDPOINT!,
+    namespace: "gds", // vendor-specific prefix (does not leak secrets)
+    username: process.env.GDS_USER, // optional
+    password: process.env.GDS_PASS, // optional
+    resolveSoapAction: (op) => `urn:gds:${op}` // optional header if your provider requires SOAPAction
 });
 
 
 const provider = new SoapAdapter({
-client,
-operations: {
-searchHotels: "SearchHotels",
-getRoomOffers: "GetRoomOffers",
-createBooking: "CreateBooking",
-cancelBooking: "CancelBooking",
-getBooking: "GetBooking",
-}
+    client,
+    operations: {
+        searchHotels: "SearchHotels",
+        getRoomOffers: "GetRoomOffers",
+        createBooking: "CreateBooking",
+        cancelBooking: "CancelBooking",
+        getBooking: "GetBooking",
+    }
 });
 
 
@@ -50,8 +50,8 @@ const provider = new SoapAdapter({ client, operations: { searchHotels: "SearchHo
 
 
 (async () => {
-const hotels = await provider.searchHotels({ city: "boston", checkin: "2025-10-01", checkout: "2025-10-03", guests: { adults: 2 } });
-console.log(hotels);
+    const hotels = await provider.searchHotels({ city: "boston", checkin: "2025-10-01", checkout: "2025-10-03", guests: { adults: 2 } });
+    console.log(hotels);
 })();
 ```
 
