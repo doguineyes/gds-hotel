@@ -1,0 +1,10 @@
+export * from "./ports/ProviderPort";
+export * from "./domain/Money";
+export * from "./domain/Hotel";
+export * from "./domain/RatePlan";
+export * from "./domain/RoomOffer";
+export * from "./domain/Booking";
+export { SampleGDSAdapter } from "./adapters/samplegds/index";
+export { SoapClient } from "./adapters/soap/SoapClient";
+export { SoapAdapter } from "./adapters/soap/SoapAdapter";
+export { TravelportLikeAdapter } from "./adapters/travelportLike/TravelportLikeAdapter";
