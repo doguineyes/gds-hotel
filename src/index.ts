@@ -7,4 +7,6 @@ export * from "./domain/Booking";
 export { SampleGDSAdapter } from "./adapters/samplegds/index";
 export { SoapClient } from "./adapters/soap/SoapClient";
 export { SoapAdapter } from "./adapters/soap/SoapAdapter";
+export { createSoapProvider } from "./adapters/soap/createSoapProvider";
 export { TravelportLikeAdapter } from "./adapters/travelportLike/TravelportLikeAdapter";
+export { travelportLike } from "./adapters/travelportLike/wrappers";
