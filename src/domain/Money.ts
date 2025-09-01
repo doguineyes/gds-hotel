@@ -1,0 +1,1 @@
+export type Money = { currency: string; amount: number };

@@ -1,0 +1,9 @@
+node_modules
+*~
+.DS_Store
+*.log
+logs
+compose.*.yaml
+compose.yaml
+.idea
+secrets
