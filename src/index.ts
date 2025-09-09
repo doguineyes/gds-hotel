@@ -5,7 +5,6 @@ export * from "./domain/RatePlan";
 export * from "./domain/RoomOffer";
 export * from "./domain/Booking";
 export { SampleGDSAdapter } from "./adapters/samplegds/index";
-export { SoapClient } from "./adapters/soap/SoapClient";
-export { SoapClientFixed, buildHotelDetailsReqXml } from "./adapters/soap/SoapClientFixed";
+export { SoapClient, buildHotelDetailsReqXml } from "./adapters/soap/SoapClient";
 export { createSoapProvider } from "./adapters/soap/createSoapProvider";
 export { travelportLike } from "./adapters/travelportLike/wrappers";

@@ -26,8 +26,8 @@ export function createSoapProvider(deps: SoapProviderDeps): ProviderPort {
             `<Guests><Adults>${q.guests.adults}</Adults>${q.guests.children ? `<Children>${q.guests.children}</Children>`: ""}</Guests>`+
             (q.hotelIds?.length ? `<HotelIds>${q.hotelIds.map(id => `<Id>${esc(id)}</Id>`).join("")}</HotelIds>` : "")+
             `<Paging><Page>${q.page ?? 1}</Page><Size>${q.size ?? 20}</Size></Paging>`;
-        const xml = await deps.client.call(deps.operations.searchHotels, body);
-        return parseSearchHotels(xml);
+        const xml = await deps.client.call(deps.operations.searchHotels, [ body ]);
+        return parseSearchHotels(xml.body);
     };
 
 
@@ -48,8 +48,8 @@ export function createSoapProvider(deps: SoapProviderDeps): ProviderPort {
             (x.languageCode ? `<LanguageCode>${esc(x.languageCode)}</LanguageCode>` : "")+
             (x.targetBranch ? `<TargetBranch>${esc(x.targetBranch)}</TargetBranch>` : "")+
             (x.traceId ? `<TraceId>${esc(x.traceId)}</TraceId>` : "");
-        const xml = await deps.client.call(deps.operations.getRoomOffers, body);
-        return parseGetOffers(xml);
+        const xml = await deps.client.call(deps.operations.getRoomOffers, [ body ]);
+        return parseGetOffers(xml.body);
     };
 
 
@@ -58,22 +58,22 @@ export function createSoapProvider(deps: SoapProviderDeps): ProviderPort {
             `<OfferId>${esc(input.offerId)}</OfferId>`+
             `<Guest><FirstName>${esc(input.guest.firstName)}</FirstName><LastName>${esc(input.guest.lastName)}</LastName>${input.guest.email ? `<Email>${esc(input.guest.email)}</Email>`: ""}${input.guest.phone ? `<Phone>${esc(input.guest.phone)}</Phone>`: ""}</Guest>`+
             (opts?.idempotencyKey ? `<IdempotencyKey>${esc(opts.idempotencyKey)}</IdempotencyKey>` : "");
-        const xml = await deps.client.call(deps.operations.createBooking, body);
-        return parseBooking(xml);
+        const xml = await deps.client.call(deps.operations.createBooking, [ body ]);
+        return parseBooking(xml.body);
     };
 
 
     const cancelBooking: ProviderPort["cancelBooking"] = async (id: string): Promise<Booking> => {
         const body = `<BookingId>${esc(id)}</BookingId>`;
-        const xml = await deps.client.call(deps.operations.cancelBooking, body);
-        return parseBooking(xml);
+        const xml = await deps.client.call(deps.operations.cancelBooking, [ body ]);
+        return parseBooking(xml.body);
     };
 
 
     const getBooking: ProviderPort["getBooking"] = async (id: string): Promise<Booking> => {
         const body = `<BookingId>${esc(id)}</BookingId>`;
-        const xml = await deps.client.call(deps.operations.getBooking, body);
-        return parseBooking(xml);
+        const xml = await deps.client.call(deps.operations.getBooking, [ body ]);
+        return parseBooking(xml.body);
     };
 
     return { searchHotels, getRoomOffers, createBooking, cancelBooking, getBooking };

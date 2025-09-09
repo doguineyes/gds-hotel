@@ -1,6 +1,6 @@
-import { SoapClientFixed, buildHotelDetailsReqXml } from "../dist/index.cjs";
+import { SoapClient, buildHotelDetailsReqXml } from "../dist/index.cjs";
 
-const client = new SoapClientFixed({
+const client = new SoapClient({
     endpoint: process.env.GDS_ENDPOINT,
     username: process.env.GDS_USERNAME,
     password: process.env.GDS_PASSWORD,
