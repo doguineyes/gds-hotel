@@ -1,5 +1,5 @@
 // cli.ts
-import { SoapClient, buildHotelDetailsReqBody } from "../dist/index.js";
+import { SoapClient, buildHotelDetailsReqBody, parseHotelDetailsXml } from "../dist/index.js";
 
 (async () => {
     const client = new SoapClient({
@@ -26,5 +26,6 @@ import { SoapClient, buildHotelDetailsReqBody } from "../dist/index.js";
 
     const res = await client.call(xml);
     console.log(res.body);
-
+    const obj = parseHotelDetailsXml(res.body);
+    console.log(JSON.stringify(obj));
 })();

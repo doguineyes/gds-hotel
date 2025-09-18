@@ -6,3 +6,4 @@ export * from "./domain/RoomOffer";
 export * from "./domain/Booking";
 export { SoapClient } from "./soap/SoapClient";
 export { buildHotelDetailsReqBody } from "./soap/hotelDetailsXml";
+export { parseHotelDetailsXml } from "./soap/parseHotelDetailsXml";
