@@ -1,9 +1,3 @@
-// SoapClient.ts
-// A minimal SOAP 1.1 client that mirrors PHP's \SoapClient behaviour for Travelport UAPI.
-// - Uses HTTP Basic Auth (Authorization: Basic ...)
-// - Sends SOAPAction header (with quotes, to match PHP logs)
-// - Wraps provided bodyXml inside a SOAP 1.1 Envelope with optional raw header fragments
-
 export type SoapClientConfig = {
     endpoint: string;
     username: string;
@@ -65,56 +59,3 @@ export class SoapClient {
         return { status: res.status, headers: hdrs, body: text };
     }
 }
-
-// Helper to build a HotelDetailsReq body that matches your PHP logs exactly.
-export function buildHotelDetailsReqXml(input: {
-    traceId: string;
-    targetBranch: string;
-    languageCode: string;           // e.g., "ZH-HANS"
-    hotelChain: string;
-    hotelCode: string;
-    numberOfAdults: number;
-    numberOfRooms: number;
-    rateRuleDetail?: "None" | "Complete" | "Rules";
-    processAllNegoRatesInd?: boolean;
-    checkinDate: string;            // "YYYY-MM-DD"
-    checkoutDate: string;           // "YYYY-MM-DD"
-    corporateCodes?: string[];      // e.g., ["SRV","S73","L72","API"]
-}) {
-    const {
-        traceId, targetBranch, languageCode, hotelChain, hotelCode,
-        numberOfAdults, numberOfRooms,
-        rateRuleDetail = "Complete",
-        processAllNegoRatesInd = false,
-        checkinDate, checkoutDate,
-        corporateCodes = [],
-    } = input;
-
-    const corpXml = corporateCodes
-        .map(code => `<ns1:CorporateDiscountID NegotiatedRateCode="true">${escapeXml(code)}</ns1:CorporateDiscountID>`)
-        .join("");
-
-    return (
-        `<ns2:HotelDetailsReq TraceId="${escapeAttr(traceId)}" TargetBranch="${escapeAttr(targetBranch)}" LanguageCode="${escapeAttr(languageCode)}" ReturnMediaLinks="false" ReturnGuestReviews="false">
-  <ns1:BillingPointOfSaleInfo OriginApplication="UAPI"/>
-  <ns2:HotelProperty HotelChain="${escapeAttr(hotelChain)}" HotelCode="${escapeAttr(hotelCode)}"/>
-  <ns2:HotelDetailsModifiers NumberOfAdults="${numberOfAdults}" RateRuleDetail="${escapeAttr(rateRuleDetail)}" NumberOfRooms="${numberOfRooms}" ProcessAllNegoRatesInd="${processAllNegoRatesInd ? "true" : "false"}">
-    ${corpXml}
-    <ns2:HotelStay>
-      <ns2:CheckinDate>${escapeXml(checkinDate)}</ns2:CheckinDate>
-      <ns2:CheckoutDate>${escapeXml(checkoutDate)}</ns2:CheckoutDate>
-    </ns2:HotelStay>
-  </ns2:HotelDetailsModifiers>
-</ns2:HotelDetailsReq>`
-    ).trim();
-}
-
-function escapeXml(s: string) {
-    return String(s).replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&apos;");
-}
-
-function escapeAttr(s: string) { return escapeXml(s); }
