@@ -13,13 +13,13 @@ import { SoapClient, buildHotelRulesReqBody, parseHotelRulesXml } from "../dist/
         traceId: "wr-01",
         targetBranch: process.env.GDS_BRANCH!,
         languageCode: "ZH-HANS",
-        ratePlanType: "K00SH0K",         // from your log example  :contentReference[oaicite:6]{index=6}
+        ratePlanType: process.env.RATE_PLAN_TYPE || "K00SH0K",         // from your log example  :contentReference[oaicite:6]{index=6}
         base: "CNY5688.00",              // optional; present in first log request  :contentReference[oaicite:7]{index=7}
-        hotelChain: "RZ",
-        hotelCode: "53058",
-        checkinDate: "2025-10-06",
-        checkoutDate: "2025-10-12",
-        numberOfAdults: 2,
+        hotelChain: process.env.HOTEL_CHAIN || "RZ",
+        hotelCode: process.env.HOTEL_CODE || "53058",
+        checkinDate: process.env.CHECKIN_DATE || "2026-10-06",
+        checkoutDate: process.env.CHECKOUT_DATE || "2026-10-07",
+        numberOfAdults: 1,
         numberOfRooms: 1,
         corporateCodes: ["S73"],         // matches CorporateDiscountID in log  :contentReference[oaicite:8]{index=8}
         negotiatedRateCode: true,

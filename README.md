@@ -1,77 +1,94 @@
-# @doguin/gds-hotel
+# gds-hotel
 
-Unofficial **Hotel GDS SOAP client** (TypeScript). Clean interface (`ProviderPort`) + generic `SoapAdapter` + a Travelport-like convenience adapter. Works in **TypeScript** and **plain Node.js (ESM/CJS)**.
+TypeScript helpers for Travelport UAPI **HotelService** SOAP API.  
+Supports `HotelDetailsReq/HotelDetailsRsp` and `HotelRulesReq/HotelRulesRsp`.
 
+## Features
 
-> **Note**: Do not commit secrets. Follow your provider's Terms of Service / NDA. This project does not ship vendor WSDL/XSD.
+- Build Body-only SOAP request XML for details and rules
+- Wrap with a minimal `SoapClient` that handles auth + SOAPAction
+- Parse responses into UpperCamel JSON objects (matches Travelport schema names)
+- Tested with Node.js 20/22
 
+## Install
 
-## Install & Build
 ```bash
-npm i
-npm run build
+npm install gds-hotel
 ```
 
+## Usage
 
-## Quick Start (JS or TS)
-```js
-import { SoapClient, TravelportLikeAdapter } from '@my-scope/gds-hotel';
-
+```ts
+import {
+  SoapClient,
+  buildHotelDetailsReqBody,
+  parseHotelDetailsXml,
+  buildHotelRulesReqBody,
+  parseHotelRulesXml
+} from "gds-hotel";
 
 const client = new SoapClient({
-    endpoint: process.env.GDS_ENDPOINT,
-    namespace: 'gds',
-    username: process.env.GDS_USER,
-    password: process.env.GDS_PASS,
-    resolveSoapAction: (op) => `urn:gds:${op}`
+  endpoint: process.env.GDS_ENDPOINT!,
+  username: process.env.GDS_USERNAME!,
+  password: process.env.GDS_PASSWORD!,
+  soapAction: `"http://localhost:8080/kestrel/HotelService"`,
 });
 
-
-const provider = new TravelportLikeAdapter({
-    client,
-    operations: {
-        searchHotels: 'SearchHotels',
-        getRoomOffers: 'HotelDetails',
-        createBooking: 'CreateBooking',
-        cancelBooking: 'CancelBooking',
-        getBooking: 'GetBooking',
-    }
+// Hotel Details
+const detailsXml = buildHotelDetailsReqBody({
+  traceId: "wr-01",
+  targetBranch: process.env.GDS_BRANCH!,
+  languageCode: "ZH-HANS",
+  hotelChain: "RE",
+  hotelCode: "36863",
+  numberOfAdults: 1,
+  numberOfRooms: 1,
+  rateRuleDetail: "Complete",
+  processAllNegoRatesInd: false,
+  checkinDate: "2025-09-20",
+  checkoutDate: "2025-09-21",
+  corporateCodes: ["V8M", "V8A", "H4Y", "8LX"]
 });
 
+const detailsRes = await client.call(detailsXml);
+const detailsObj = parseHotelDetailsXml(detailsRes.body);
 
-const offers = await provider.getRoomOffers('SL:08494', {
-    checkin: '2025-11-01',
-    checkout: '2025-11-03',
-    guests: { adults: 1, children: 0 },
-    extras: {
-    traceId: 'wr-01',
-    corporateDiscountIds: ['V8M','V8A','H4Y','8LX'],
-    rooms: 1,
-    languageCode: 'ZH-HANS',
-    targetBranch: process.env.GDS_BRANCH,
-},
+// Hotel Rules
+const rulesXml = buildHotelRulesReqBody({
+  traceId: "wr-01",
+  targetBranch: process.env.GDS_BRANCH!,
+  languageCode: "ZH-HANS",
+  ratePlanType: "K00SH0K",
+  base: "CNY5688.00",
+  hotelChain: "RZ",
+  hotelCode: "53058",
+  checkinDate: "2026-10-06",
+  checkoutDate: "2026-10-07",
+  numberOfAdults: 1,
+  numberOfRooms: 1,
+  corporateCodes: ["S73"],
+  negotiatedRateCode: true
 });
-console.log(offers);
+
+const rulesRes = await client.call(rulesXml);
+const rulesObj = parseHotelRulesXml(rulesRes.body);
 ```
 
+See [`examples/cli-hotel-details.js`](examples/cli-hotel-details.js) and [`examples/cli-hotel-rules.js`](examples/cli-hotel-rules.js) for complete runnable code.
 
-## Example CLI
-Create a `.env` with `GDS_ENDPOINT`, `GDS_USER`, `GDS_PASS`, `GDS_BRANCH` (if needed), then:
-```bash
-npm run build
-npm run example:hotel-details
-```
+## Environment Variables
 
+- `GDS_ENDPOINT` – Travelport HotelService endpoint
+- `GDS_USERNAME` – UAPI username
+- `GDS_PASSWORD` – UAPI password
+- `GDS_BRANCH` – TargetBranch (e.g. `P3824210`)
+- `HOTEL_CHAIN`, `HOTEL_CODE`, `CHECKIN_DATE`, `CHECKOUT_DATE`, `RATE_PLAN_TYPE` (for examples)
 
-## Publishing
-```bash
-npm publish --access public
-```
+## Notes
 
-
-## Disclaimer
-This library is **unofficial**. You are responsible for compliance with provider ToS/NDA. No credentials or proprietary WSDLs are included.
-
+- Always pass **Body-only** XML to `SoapClient.call()`. It will wrap it in a SOAP envelope.
+- If you pass a full `<SOAP-ENV:Envelope>`, you’ll get `400 Request data not found`.
 
 ## License
-MIT © 2025 Dog Chen
+
+MIT

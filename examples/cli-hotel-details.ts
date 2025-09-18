@@ -13,14 +13,14 @@ import { SoapClient, buildHotelDetailsReqBody, parseHotelDetailsXml } from "../d
         traceId: "wr-01",
         targetBranch: process.env.GDS_BRANCH!,
         languageCode: "ZH-HANS",
-        hotelChain: "RE",
-        hotelCode: "36863",
+        hotelChain: process.env.HOTEL_CHAIN || "RE",
+        hotelCode: process.env.HOTEL_CODE || "36863",
         numberOfAdults: 1,
         numberOfRooms: 1,
         rateRuleDetail: "Complete",
         processAllNegoRatesInd: false,
-        checkinDate: "2025-09-20",
-        checkoutDate: "2025-09-21",
+        checkinDate: process.env.CHECKIN_DATE || "2026-09-20",
+        checkoutDate: process.env.CHECKOUT_DATE || "2026-09-21",
         corporateCodes: ["V8M","V8A","H4Y","8LX"],
     });
 
