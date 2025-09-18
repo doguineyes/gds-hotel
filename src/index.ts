@@ -7,3 +7,5 @@ export * from "./domain/Booking";
 export { SoapClient } from "./soap/SoapClient";
 export { buildHotelDetailsReqBody } from "./soap/hotelDetailsXml";
 export { parseHotelDetailsXml } from "./soap/parseHotelDetailsXml";
+export { buildHotelRulesReqBody } from "./soap/hotelRulesXml";
+export { parseHotelRulesXml } from "./soap/parseHotelRulesXml";

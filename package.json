@@ -19,7 +19,8 @@
     "build": "tsup src/index.ts --dts --format cjs,esm --sourcemap",
     "test": "vitest run",
     "prepublishOnly": "npm run build",
-    "example:hotel-details": "node examples/cli-hotel-details.ts"
+    "example:hotel-details": "node examples/cli-hotel-details.ts",
+    "example:hotel-rules": "node examples/cli-hotel-rules.ts"
   },
   "engines": { "node": ">=18" },
   "dependencies": {
